@@ -15,12 +15,12 @@ function isPreactElement(node) {
 	return ATTR_KEY in node;
 }
 
-function setUrl(url, type='push') {
+function setUrl(url, type='push', state) {
 	if (customHistory && customHistory[type]) {
 		customHistory[type](url);
 	}
 	else if (typeof history!=='undefined' && history[type+'State']) {
-		history[type+'State'](null, null, url);
+		history[type+'State'](state, null, url);
 	}
 }
 
@@ -40,7 +40,7 @@ function getCurrentUrl() {
 }
 
 
-function route(url, replace=false) {
+function route(url, replace=false, state=null) {
 	if (typeof url!=='string' && url.url) {
 		replace = url.replace;
 		url = url.url;
@@ -48,7 +48,7 @@ function route(url, replace=false) {
 
 	// only push URL into history if we can handle it
 	if (canRoute(url)) {
-		setUrl(url, replace ? 'replace' : 'push');
+		setUrl(url, replace ? 'replace' : 'push', state);
 	}
 
 	return routeTo(url);
@@ -136,7 +136,7 @@ function initEventListeners() {
 		if (!customHistory) {
 			addEventListener('popstate', () => routeTo(getCurrentUrl()));
 		}
-		addEventListener('click', delegateLinkHandler);
+		//addEventListener('click', delegateLinkHandler);
 	}
 	eventListenersInitialized = true;
 }
